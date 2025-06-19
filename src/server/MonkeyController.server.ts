@@ -1,6 +1,7 @@
 import { SpawnBananas, StopBananaSpawn } from "./BananaController/SpawnBanana";
 import { GetSimulationInfo } from "./types/types";
 import { SpawnMonkey } from "./MonkeyModules/MonkeyBuilder";
+import { SetCurrentArea } from "./MonkeyModules/MonkeyReproducer";
 
 const Bananas = game.WaitForChild("Workspace").FindFirstChild("Bananas") as Folder;
 const EndSimulation = game.GetService("ReplicatedStorage").WaitForChild("Remotes").WaitForChild("RemoteEvents").WaitForChild("EndSimulation") as RemoteEvent;
@@ -10,8 +11,10 @@ const StartSimulation = game.GetService("ReplicatedStorage").WaitForChild("Remot
 
 
 function StartSimulationHandler(SimInfo: GetSimulationInfo): void {
-    SpawnMonkey(SimInfo);
-    SpawnBananas(SimInfo.BananaGen);
+    print(SimInfo);
+    SpawnMonkey(SimInfo,SimInfo.Area);
+    SpawnBananas(SimInfo.BananaGen,SimInfo.Area);
+    SetCurrentArea(SimInfo.Area);
 }
 
 

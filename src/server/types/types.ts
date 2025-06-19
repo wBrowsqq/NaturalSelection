@@ -15,5 +15,19 @@ type GetSimulationInfo = {
     FastMonkeys: number;
     NormalMonkeys: number;
     BananaGen: number
+    Area : string
 }
-export { Monkey, SpecificSpawn , GetSimulationInfo };
+
+interface MonkeyRoamerType {
+	monkey: Model;
+	readonly monkeytype: "SlowMonkey" | "NormalMonkey" | "FastMonkey";
+	HumanoidRootPart: BasePart | undefined;
+	reproducing: boolean;
+    humanoid : Humanoid;
+    Reproduce : (monkeyBasePart: BasePart) => void;
+    constructor: (monkey: Model, monkeytype: "SlowMonkey" | "NormalMonkey" | "FastMonkey") => void;
+}
+
+
+
+export { Monkey, SpecificSpawn , GetSimulationInfo, MonkeyRoamerType };

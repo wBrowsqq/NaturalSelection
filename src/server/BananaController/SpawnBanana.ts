@@ -3,13 +3,16 @@ const monkey = game.GetService("ReplicatedStorage").WaitForChild("Mutations");
 const BANANA = game.GetService("ServerStorage").WaitForChild("Models").WaitForChild("Banana");
 const spawnrate = 45;
 const ts = game.GetService("TweenService");
-const tree = game.Workspace.WaitForChild("Trees").GetChildren();
+
 const macacos = game.Workspace.WaitForChild("Macacos");
 let CurrentThread : thread | undefined = undefined;
 
-const spawnbanana = (): void => {
+const spawnbanana = (Area : string): void => {
     const newBanana = BANANA.Clone() as BasePart;
-    const randomtree = tree[math.random(1, tree.size()) - 1]; 
+
+    const tree = game.Workspace.WaitForChild("Maps").FindFirstChild(Area)?.FindFirstChild("Trees") as Folder;
+    const childs = tree.GetChildren();
+    const randomtree = childs[math.random(1, childs.size()) - 1]; 
     
     const leafs = randomtree.FindFirstChild("Leafs");
     if (!leafs) return;
@@ -41,16 +44,13 @@ const spawnbanana = (): void => {
 };
 
 // Loop principal
-const SpawnBananas = (BananaGen: number): void => {
-    if (BananaGen === 0) {
-        BananaGen = 1;
-    }
+const SpawnBananas = (BananaGen: number, Area : string): void => {
 
     task.spawn(() => {
         while (true) {
             task.wait(BananaGen);
-            print("Spawn Banana");
-            spawnbanana();
+           
+            spawnbanana(Area);
             
             // Damage all monkeys
             const macacosChildren = macacos.GetChildren();
