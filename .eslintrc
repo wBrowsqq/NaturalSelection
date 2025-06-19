@@ -18,10 +18,12 @@
 	"extends": [
 		"eslint:recommended",
 		"plugin:@typescript-eslint/recommended",
-		"plugin:roblox-ts/recommended",
-		"plugin:prettier/recommended"
+		"plugin:roblox-ts/recommended"
 	],
 	"rules": {
-		"prettier/prettier": "warn"
+		"no-inner-declarations": "off",
+		"no-constant-condition": "off",
+		"roblox-ts/lua-truthiness": "off",
+		"no-mixed-spaces-and-tabs": "off"
 	}
 }
