@@ -34,12 +34,16 @@ const SpawnSpecificMonkey = (
 	monkeyType: "FastMonkey" | "NormalMonkey" | "SlowMonkey",
 	Area : string,
 	monkeyPosition?: Vector3,
+	Health? : number
 ): void => {
 	for (let i = 0; i < count; i++) {
-
+		
 		const SpawnPart = game.Workspace.WaitForChild("Maps").FindFirstChild(Area)?.FindFirstChild("SpawnPart") as BasePart;
-
+		const Humanoid = monkeyModel.FindFirstChild("Humanoid") as Humanoid;
 		const monkeyClone = monkeyModel.Clone();
+		const Childs = monkeyClone.GetChildren().filter((child) => child.IsA("BasePart") || child.IsA("MeshPart"));
+		
+		Humanoid.Health = Health || 100; // Define a saúde do macaco, padrão é 100
 		monkeyClone.Parent = MacacosFolder;
 		// Inicia o roaming do macaco
 		task.spawn(() => {
@@ -47,7 +51,9 @@ const SpawnSpecificMonkey = (
 		});
 		// Posiciona o macaco em uma posição aleatória
 		const randomPosition = monkeyPosition || GetRandomPositionOnBaseplate(SpawnPart);
-
+		for (const child of Childs) {
+			child.SetNetworkOwner(undefined); // Remove o dono da rede para evitar problemas de sincronização
+		}
 		// Usa PivotTo se o modelo tem PrimaryPart, senão usa SetPrimaryPartCFrame
 		if (monkeyClone.PrimaryPart) {
 			monkeyClone.PivotTo(new CFrame(randomPosition));

@@ -46,18 +46,22 @@ const spawnbanana = (Area : string): void => {
 // Loop principal
 const SpawnBananas = (BananaGen: number, Area : string): void => {
 
-    task.spawn(() => {
+    CurrentThread = task.spawn(() => {
         while (true) {
             task.wait(BananaGen);
-           
+           print(`Spawning bananas in area: ${Area}`);
             spawnbanana(Area);
             
             // Damage all monkeys
             const macacosChildren = macacos.GetChildren();
             for (const monkey of macacosChildren) {
                 const humanoid = monkey.FindFirstChild("Humanoid") as Humanoid;
-                if (humanoid) {
-                    humanoid.TakeDamage(math.random(120, 220) / 100);
+                if (monkey.Name === "FastMonkey") {
+                    humanoid.Health -= 1.5*1.2; 
+                } else if (monkey.Name === "NormalMonkey") {
+                    humanoid.Health -= 1.5*1;
+                } else if (monkey.Name === "SlowMonkey") {
+                    humanoid.Health -= 1.5*0.8; 
                 }
             }
             

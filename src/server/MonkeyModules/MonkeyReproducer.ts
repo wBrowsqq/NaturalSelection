@@ -18,7 +18,7 @@ export function AddCandidate(monkey: MonkeyRoamer) {
     }
     
     candidates.set(model, monkey);
-    
+      print(candidates)
 }
 
 export function RemoveCandidate(monkey: MonkeyRoamer) {
@@ -55,9 +55,11 @@ function determineOffspringType(parent1: MonkeyRoamer, parent2: MonkeyRoamer):  
     const health2 = parent2.humanoid.Health / parent2.humanoid.MaxHealth;
     
     // Bias para o pai mais saudável, mas ainda com chance para o outro
-    const bias = (health1 / (health1 + health2)) * 0.7 + 0.15; // Entre 15% e 85%
-    
+    const bias = (health1 / (health1 + health2)) * 0.8 + 0.2; // 80% do pai mais saudável, 20% do outro
+    parent2.humanoid.Health -= 15
+    parent1.humanoid.Health -= 15
     return math.random() < bias ? parent1.monkeytype : parent2.monkeytype;
+  
 }
 
 // CORREÇÃO 4: Melhorar o processo de reprodução
@@ -107,11 +109,13 @@ async function processReproduction(monkey1: MonkeyRoamer, monkey2: MonkeyRoamer,
         // Determina o tipo do novo macaco
         const monkeyTypeChoosed = determineOffspringType(monkey1, monkey2);
         
-        async function SpawnMonkey(monkeyTypeChoosed : "FastMonkey" | "SlowMonkey" | "NormalMonkey" ,spawnPosition: Vector3) {
+        async function SpawnMonkey(monkeyTypeChoosed : "FastMonkey" | "SlowMonkey" | "NormalMonkey" ,spawnPosition: Vector3, Health : number) {
             const { SpawnSpecificMonkey, MonkeyModels } = await import("./MonkeyBuilder");
-            SpawnSpecificMonkey(MonkeyModels[monkeyTypeChoosed], 1, monkeyTypeChoosed, Area, spawnPosition);
+            SpawnSpecificMonkey(MonkeyModels[monkeyTypeChoosed], 1, monkeyTypeChoosed, Area, spawnPosition, Health);
         }
-        SpawnMonkey(monkeyTypeChoosed, spawnPosition);
+
+        const HealthCalc : number = (monkey1.humanoid.Health + monkey2.humanoid.Health) / 2;   
+        SpawnMonkey(monkeyTypeChoosed, spawnPosition,HealthCalc);
         
 
         
@@ -145,7 +149,7 @@ task.spawn(() => {
             // Limpa candidatos inválidos
             const invalidCandidates: Model[] = [];
             for (const [model, monkey] of candidates) {
-                if (!monkey.HumanoidRootPart || !model.Parent || monkey.reproducing) {
+                if (!monkey.HumanoidRootPart || !model.Parent || monkey.reproducing || !monkey.humanoid || monkey.humanoid.Health < 50) {
                     invalidCandidates.push(model);
                 }
             }

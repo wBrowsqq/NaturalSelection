@@ -5,20 +5,34 @@ const TweenService = game.GetService("TweenService");
 
 
 const MonkeyTypes = {
+	// DOMINA EM ÁREAS GRANDES - Explorer/Scout
 	["SlowMonkey"]: {
-		roamingSpeed: 16,
-		ReproductionTime: 6,
-		BananaDetectionRange: 25, // Range to detect bananas
+		roamingSpeed: 10,              // Mais lento
+		ReproductionTime: 20,          // Reproduz mais devagar
+		BananaDetectionRange: 50,      // MELHOR detecção - encontra bananas longe
+		Health: 120,                   // Mais resistente
+		EnergyConsumption: 0.8,        // Gasta menos energia
+		Specialization: "Long-range foraging in open areas"
 	},
+	
+	// DOMINA EM ÁREAS MÉDIAS - Balanced/Versatile  
 	["NormalMonkey"]: {
-		roamingSpeed: 24,
-		ReproductionTime: 8,
-		BananaDetectionRange: 20, // Range to detect bananas
+		roamingSpeed: 20,              // Velocidade média
+		ReproductionTime: 12,          // MELHOR reprodução - cria população rápido
+		BananaDetectionRange: 35,      // Detecção média
+		Health: 100,                   // Vida padrão
+		EnergyConsumption: 1.0,        // Consumo padrão
+		Specialization: "Rapid population growth in mixed terrain"
 	},
+	
+	// DOMINA EM ÁREAS PEQUENAS - Rush/Aggressive
 	["FastMonkey"]: {
-		roamingSpeed: 32,
-		ReproductionTime: 12,
-		BananaDetectionRange: 15, // Range to detect bananas
+		roamingSpeed: 35,              // MELHOR velocidade - chega primeiro
+		ReproductionTime: 8,           // Reproduz rápido mas não o melhor
+		BananaDetectionRange: 20,      // Menor detecção
+		Health: 100,                    // Mais frágil
+		EnergyConsumption: 1.2,        // Gasta mais energia
+		Specialization: "Quick resource grabbing in dense areas"
 	},
 };
 type MonkeyType = keyof typeof MonkeyTypes;
@@ -60,10 +74,7 @@ export class MonkeyRoamer {
 			task.wait(0.1);
 		}
 
-		// Para o movimento na posição atual
-		if (this.HumanoidRootPart) {
-			this.humanoid.MoveTo(this.HumanoidRootPart.Position);
-		}
+
 
 		// Aguarda um tempo fixo para "reproduzir"
 		task.wait(2);
@@ -125,7 +136,7 @@ export class MonkeyRoamer {
 	private EatBanana(Banana: BasePart): void {
 		Banana.SetAttribute("Avaliable", false);
 		Banana.Destroy();
-		this.humanoid.Health = this.humanoid.Health + math.random(7, 15); // Heal the monkey by a random amount
+		this.humanoid.Health = this.humanoid.Health + math.random(15, 25); // Heal the monkey by a random amount
 		const bananaToolClone = BananaTool.Clone() as Tool;
 		bananaToolClone.Parent = this.monkey;
 		this.humanoid.EquipTool(bananaToolClone);
@@ -138,7 +149,7 @@ export class MonkeyRoamer {
 	private StartRoam(): void {
 		// Não faça nada se já estiver ocupado
 		if (this.reproducing) {
-
+            print(`Monkey ${this.monkey.Name} is reproducing, skipping roam.`);
 			return;
 		}
 
@@ -147,7 +158,7 @@ export class MonkeyRoamer {
 		const isReadyToReproduce = timeSinceLastReproduction >= this.ReproductionTime;
 
 		// Prioridade 1: Reprodução
-		if (isReadyToReproduce) {
+		if (isReadyToReproduce && this.humanoid.Health > this.humanoid.MaxHealth * 0.5) {
 			AddCandidate(this);
 		}
 
@@ -159,7 +170,7 @@ export class MonkeyRoamer {
 				const distance = closestBanana.Position.sub(
 					this.HumanoidRootPart?.Position || new Vector3(0, 0, 0),
 				).Magnitude;
-				if (distance <= 5) {
+				if (distance <= 3) {
 					this.EatBanana(closestBanana);
 					return;
 				} else {
@@ -200,6 +211,9 @@ export class MonkeyRoamer {
 		this.BananaDetectionRange = MonkeyTypes[monkeytype].BananaDetectionRange;
 		this.humanoid = this.monkey.WaitForChild("Humanoid") as Humanoid;
 		this.HumanoidRootPart = this.monkey.FindFirstChild("HumanoidRootPart") as BasePart;
+
+        this.humanoid.MaxHealth = MonkeyTypes[monkeytype].Health; // Set maximum health
+        
 
         this.Baseplate = game.Workspace.WaitForChild("Maps").FindFirstChild(Area)?.FindFirstChild("Baseplate") as BasePart;
 		const EatAnimation = new Instance("Animation", monkey);
