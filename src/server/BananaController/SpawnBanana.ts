@@ -1,5 +1,5 @@
 // Obtém referências dos objetos principais
-const monkey = game.GetService("ReplicatedStorage").WaitForChild("Macaco");
+const monkey = game.GetService("ReplicatedStorage").WaitForChild("Mutations");
 const BANANA = game.GetService("ServerStorage").WaitForChild("Models").WaitForChild("Banana");
 const spawnrate = 45;
 const ts = game.GetService("TweenService");

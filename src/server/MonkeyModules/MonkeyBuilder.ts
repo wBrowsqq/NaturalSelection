@@ -1,8 +1,8 @@
 // Description: This module is responsible for spawning monkey models in the game.
 import {Monkey, GetSimulationInfo} from "../types/types";
 
-const Baseplate = game.GetService("Workspace").WaitForChild("Baseplate") as BasePart;
-const Monkeys = game.GetService("ReplicatedStorage").WaitForChild("Monkeys");
+const Baseplate = game.GetService("Workspace").WaitForChild("SpawnPart") as BasePart;
+const Monkeys = game.GetService("ReplicatedStorage").WaitForChild("Mutations") as Folder
 const MacacosFolder = game.GetService("Workspace").WaitForChild("Macacos");
 
 const MonkeyModels = {
@@ -12,27 +12,18 @@ const MonkeyModels = {
 };
 
 // Função para gerar posição aleatória no cilindro da baseplate
-const GetRandomPositionOnCylinder = (): Vector3 => {
+const GetRandomPositionOnBaseplate = (): Vector3 => {
 	const baseplateSize = Baseplate.Size;
-	const radius = baseplateSize.X / 2; 
+	const baseplatePosition = Baseplate.Position;
 	
+	// Gera posição aleatória dentro dos limites da baseplate
+	const x = baseplatePosition.X + (math.random() - 0.5) * baseplateSize.X;
+	const z = baseplatePosition.Z + (math.random() - 0.5) * baseplateSize.Z;
 	
-	const angle = math.random() * math.pi * 2;
+	// Altura: topo da baseplate + margem para spawnar em cima
+	const y = baseplatePosition.Y + (baseplateSize.Y / 2) + 5;
 	
-	const distance = math.random() * radius;
-	
-	
-	const x = math.cos(angle) * distance;
-	const z = math.sin(angle) * distance;
-	
-	
-	const y = Baseplate.Position.Y + (baseplateSize.Y / 2) + 5;
-	
-	return new Vector3(
-		Baseplate.Position.X + x,
-		y,
-		Baseplate.Position.Z + z
-	);
+	return new Vector3(x, y, z);
 };
 
 // Função para spawnar um tipo específico de macaco
@@ -42,7 +33,7 @@ const SpawnSpecificMonkey = (monkeyModel: Model, count: number): void => {
 		monkeyClone.Parent = MacacosFolder;
 		
 		// Posiciona o macaco em uma posição aleatória
-		const randomPosition = GetRandomPositionOnCylinder();
+		const randomPosition = GetRandomPositionOnBaseplate();
 		
 		// Usa PivotTo se o modelo tem PrimaryPart, senão usa SetPrimaryPartCFrame
 		if (monkeyClone.PrimaryPart) {

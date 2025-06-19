@@ -8,6 +8,7 @@ const StartSimulation = game.GetService("ReplicatedStorage").WaitForChild("Remot
 
 
 
+
 function StartSimulationHandler(SimInfo: GetSimulationInfo): void {
     SpawnMonkey(SimInfo);
     SpawnBananas(SimInfo.BananaGen);
