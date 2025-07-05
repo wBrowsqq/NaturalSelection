@@ -25,7 +25,7 @@ https://www.roblox.com/games/124015332278424/Natural-Selection
 
 For a detailed explanation of the project and VR experience demonstration:
 
-[![Watch the full video](https://img.shields.io/badge/▶️-Watch%20on%20YouTube-red?style=for-the-badge&logo=youtube)](https://www.youtube.com/watch?v=bgPcIR8xHZs)
+
 
 ## 🛠️ Technologies Used
 
@@ -62,8 +62,6 @@ https://www.roblox.com/games/124015332278424/Natural-Selection
 ## 📹 Demonstração Completa
 
 Para uma explicação detalhada do projeto e demonstração da experiência VR:
-
-[![Assista ao vídeo completo](https://img.shields.io/badge/▶️-Assista%20no%20YouTube-red?style=for-the-badge&logo=youtube)](https://www.youtube.com/watch?v=bgPcIR8xHZs)
 
 ## 🛠️ Tecnologias Utilizadas
 
